@@ -91,4 +91,19 @@ RUN rm -rf  \
         $NDK_HOME/build/core/toolchains/mips* \
     && sdkmanager --list | sed -e '/Available Packages/q'
 
+# Install Node.js and Yarn
+
+RUN apk add --no-cache nodejs yarn
+
+# Install git secret
+RUN apk add --no-cache git gnupg make
+ARG GIT_SECRET_VERSION=0.2.6
+RUN wget https://github.com/sobolevn/git-secret/archive/v${GIT_SECRET_VERSION}.zip \
+    && unzip -q v${GIT_SECRET_VERSION}.zip \
+    && cd git-secret-${GIT_SECRET_VERSION} \
+    && make build \
+    && PREFIX="/usr/local" make install \
+    && cd .. \
+    && rm -rf git-secret-${GIT_SECRET_VERSION}
+
 WORKDIR /home/android
